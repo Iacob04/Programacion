@@ -10,7 +10,9 @@ public class main {
 		
 		Tarea.mostrarTareas();
 		Tarea.grabarFicheroTareas(nombreFichero);
-
+		System.out.println("-----------");
+		Tarea.ordenarPorBurbuja();
+		Tarea.mostrarTareas();
 	}
 
 }

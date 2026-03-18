@@ -84,20 +84,23 @@ public class Tarea {
 	
 	}
 	
-	   public static ArrayList<Integer> ordenarPorBurbuja(ArrayList<Integer> desordenada) {
-	        boolean hayCambios = true;
-	        while (hayCambios == true) {
-	            hayCambios = false;
-	            for (int i=0; i<listaTareas.size()-1; i++) {
-	               
-	                if (listaTareas.get(i+1) > listaTareas.get(i)) {
-	                    int n = listaTareas.remove(i);
-	                    listaTareas.add(i+1,n);
-	                    hayCambios = true;
-	                }
+	public static void ordenarPorBurbuja() {
+	    boolean hayCambios = true;
+	    
+	    while (hayCambios) {
+	        hayCambios = false;
+	        
+	        for (int i = 0; i < listaTareas.size() - 1; i++) {
+	            // Comparar la prioridad de la tarea actual con la siguiente
+	            if (listaTareas.get(i).prioridad > listaTareas.get(i + 1).prioridad) {
+	                // Intercambiar las tareas de posición
+	                Tarea temp = listaTareas.get(i);
+	                listaTareas.set(i, listaTareas.get(i + 1));
+	                listaTareas.set(i + 1, temp);
+	                
+	                hayCambios = true;
 	            }
 	        }
-	        return desordenada;
 	    }
 	}
-
+	}
