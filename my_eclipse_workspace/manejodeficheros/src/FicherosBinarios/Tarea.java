@@ -1,11 +1,13 @@
-package listatareas;
+package FicherosBinarios;
 
 import java.io.BufferedReader;
+
 import java.io.FileReader;
 import java.io.PrintWriter;
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Tarea {
+public class Tarea implements Serializable{
 	
 	private String id;
 	private String titulo;
