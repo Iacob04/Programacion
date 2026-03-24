@@ -10,6 +10,7 @@ public class ficheroAccesoAleatorio {
 	
 	static final int TAMANYO_NOMBRE = 20;
 	static final int TAMANYO_REGISTRO = (TAMANYO_NOMBRE *2)+4;
+	static boolean borrado ;
 
 	public static void main(String[] args) {
 		String fichero = "agenda.dat";
@@ -22,11 +23,15 @@ public class ficheroAccesoAleatorio {
 		
 		try {
 			crearAgenda(fichero,agenda);
+			borrarRegistro(fichero,2);
+			leerTodo(fichero);
 			
+			System.out.println("------------------");
 			leerRegistro(fichero,2);
 			leerRegistro(fichero,5);
+			
 			modificarRegistro(fichero,2,"Ana María", 15);
-			nuevoRegistro(fichero, "Jose", 34);
+			//nuevoRegistro(fichero, "Jose", 34);
 			
 		}catch(Exception e) {
 			System.out.println("Error: "+e.getMessage());
@@ -83,15 +88,22 @@ public class ficheroAccesoAleatorio {
 		
 		try(RandomAccessFile raf = new RandomAccessFile(fichero, "rw")){
 			long posicion = TAMANYO_REGISTRO * (registro-1);
+			String leeNombre = leerNombre(raf);
 			if(posicion>=raf.length()) {
 				System.out.println("El registro "+registro+" no existe");
 				System.out.println("El registro más alto es el "+ raf.length()/TAMANYO_REGISTRO);
 			}
 			else {
+				
+				if(leeNombre.charAt(0) == '*') {
+					System.out.println("Registro " + registro + " no se puede modificar ya que esta borrado");
+				}
+				else {
 				raf.seek(posicion);
 				escribirNombre(raf,nombre);
 				raf.writeInt(edad);
 				System.out.println("Registro " + registro + " modificado correctamente");
+				}
 			}
 		}
 		
@@ -108,7 +120,12 @@ public class ficheroAccesoAleatorio {
 				raf.seek(posicion);
 				String nombre = leerNombre(raf);
 				int edad = raf.readInt();
-				System.out.printf("Registro: %d - Nombre: %s. Eadd: %d\n",registro,nombre,edad);
+				if(nombre.charAt(0) != '*') {
+					System.out.printf("Registro: %d - Nombre: %s. Edad: %d%n",registro, nombre, edad);
+					}
+				else {
+					System.out.println("El registro "+ registro + " esta marcado para ser borrado");
+				}
 			}
 		}
 	}
@@ -123,5 +140,50 @@ public class ficheroAccesoAleatorio {
 		return nombre.trim();
 		
 	}
+	public static void leerTodo(String fichero) throws Exception {
+		try (RandomAccessFile raf = new RandomAccessFile(fichero, "r")) {
+		int numRegistro = 1;
+
+		while (raf.getFilePointer() < raf.length()) {
+		String nombre = leerNombre(raf);
+		int edad = raf.readInt();
+		if(nombre.charAt(0) != '*') {
+		System.out.printf("Registro: %d - Nombre: %s. Edad: %d%n",numRegistro, nombre, edad);
+		}
+		numRegistro++;
+			}
+		}
+	}
+	
+	public static void borrarRegistro(String fichero, int registro)throws Exception{
+		
+		try(RandomAccessFile raf = new RandomAccessFile(fichero, "rw")){
+			long posicion = TAMANYO_REGISTRO * (registro-1);
+			if(posicion>=raf.length()) {
+				System.out.println("El registro "+registro+" no existe");
+				System.out.println("El registro más alto es el "+ raf.length()/TAMANYO_REGISTRO);
+			}
+			else {
+				raf.seek(posicion);
+				String nombre = leerNombre(raf);
+				
+				if(nombre.charAt(0) == '*') {
+					System.out.println("El registro "+registro+" ya está borrado");
+				}
+				else {
+					nombre = leerNombre(raf).substring(1);
+					String nombreBorrado = "*"+nombre;
+					raf.seek(posicion);
+		            escribirNombre(raf, nombreBorrado);
+		            System.out.println("El registro "+registro+" se ha borrado");
+		            borrado = true;
+				}
+				
+			}
+		}
+		
+	}
+	
+
 
 }
