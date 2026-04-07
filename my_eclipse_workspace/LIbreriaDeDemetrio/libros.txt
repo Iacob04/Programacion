@@ -1,4 +1,3 @@
-Autor;Titulo;Categoria;Precio
 
 Demetrio Imedio;El arte de no entender Java;Informatica;22.50
 German Tequilla;Cocina para torpes;Cocina;14.99
