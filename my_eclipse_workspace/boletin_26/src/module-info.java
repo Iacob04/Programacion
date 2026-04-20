@@ -4,7 +4,6 @@
 /**
  * 
  */
-module EjercicioLogin {
-	requires jdk.jdi;
+module boletin_26 {
 	requires java.sql;
 }

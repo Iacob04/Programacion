@@ -1,14 +1,26 @@
-package logIn;  
+package logIn;
 
-import java.sql.*;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.SecureRandom;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Base64;
 import java.util.Scanner;
 
 public class Main {
 
-    static Scanner teclado = new Scanner(System.in); // Un solo Scanner global
+    static Scanner teclado = new Scanner(System.in);
+    static final String servidorBase = "jdbc:mysql://localhost:3306/";
+    static final String servidor     = "jdbc:mysql://localhost:3306/login_db";
+    static final String usuar  = "admin";
+    static final String passwd = "1234";
 
     public static void main(String[] args) {
-        String servidor = "jdbc:mysql://localhost:3306/";
+        inicializar();
 
         boolean menu = false;
 
@@ -18,8 +30,15 @@ public class Main {
             System.out.println("=== 2. Registro =========");
             System.out.println("=========================");
             System.out.print("Introduzca la opción: ");
-            int opcion = teclado.nextInt();
-            teclado.nextLine(); // limpiar buffer tras nextInt()
+            int opcion;
+            try {
+                opcion = teclado.nextInt();
+                teclado.nextLine();
+            } catch (Exception e) {
+                teclado.nextLine();
+                System.out.println("Opción no válida.");
+                continue;
+            }
 
             switch (opcion) {
                 case 1:
@@ -34,9 +53,49 @@ public class Main {
                     System.out.println("Opción no válida.");
             }
 
-        } while (menu == false);
+        } while (!menu);
 
         teclado.close();
+    }
+
+    public static void inicializar() {
+        String sqlDB    = "CREATE DATABASE IF NOT EXISTS login_db";
+        String sqlTable = "CREATE TABLE IF NOT EXISTS login_db.usuarios (" +
+                          "id INT AUTO_INCREMENT PRIMARY KEY, " +
+                          "usuario VARCHAR(50) NOT NULL UNIQUE, " +
+                          "contraseña VARCHAR(255) NOT NULL, " +
+                          "salt VARCHAR(100) NOT NULL, " +
+                          "email VARCHAR(100) NOT NULL UNIQUE)";
+
+        try (Connection conexion = DriverManager.getConnection(servidorBase, usuar, passwd);
+             PreparedStatement stmtDB    = conexion.prepareStatement(sqlDB);
+             PreparedStatement stmtTable = conexion.prepareStatement(sqlTable)) {
+
+            stmtDB.executeUpdate();
+            stmtTable.executeUpdate();
+
+        } catch (SQLException e) {
+            System.out.println("Error al inicializar la base de datos: " + e.getMessage());
+        }
+    }
+
+    public static String generarSalt() {
+        SecureRandom azar = new SecureRandom();
+        byte[] salt = new byte[16];
+        azar.nextBytes(salt);
+        return Base64.getEncoder().encodeToString(salt);
+    }
+
+    public static String generarHash(String saltMasContra) {
+        String hashTXT = null;
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-512");
+            byte[] hash = digest.digest(saltMasContra.getBytes(StandardCharsets.UTF_8));
+            hashTXT = Base64.getEncoder().encodeToString(hash);
+        } catch (Exception e) {
+            System.out.println("El algoritmo SHA-512 no está disponible.");
+        }
+        return hashTXT;
     }
 
     public static void IniciarSesion() {
@@ -46,7 +105,31 @@ public class Main {
         System.out.print("Introduzca la contraseña: ");
         String contraseña = teclado.nextLine();
 
-        System.out.println("Sesión iniciada como: " + usuario);
+        String sql = "SELECT contraseña, salt FROM usuarios WHERE usuario = ?";
+
+        try (Connection conexion = DriverManager.getConnection(servidor, usuar, passwd);
+             PreparedStatement stmt = conexion.prepareStatement(sql)) {
+
+            stmt.setString(1, usuario);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                String hashGuardado = rs.getString("contraseña");
+                String salt         = rs.getString("salt");
+                String hashIntento  = generarHash(salt + contraseña);
+
+                if (hashGuardado.equals(hashIntento)) {
+                    System.out.println("Sesión iniciada como: " + usuario);
+                } else {
+                    System.out.println("Usuario o contraseña incorrectos.");
+                }
+            } else {
+                System.out.println("Usuario o contraseña incorrectos.");
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error al conectar con la base de datos: " + e.getMessage());
+        }
     }
 
     public static void Registrarse() {
@@ -59,20 +142,40 @@ public class Main {
         System.out.print("Vuelva a introducir la contraseña: ");
         String contraseña2 = teclado.nextLine();
 
-        // equals() para comparar Strings, no matches()
-        if (contraseña2.equals(contraseña)) {
-            System.out.println("Usuario registrado correctamente ");
-        } else {
-            System.out.println("Las contraseñas no coinciden ");
+        if (!contraseña2.equals(contraseña)) {
+            System.out.println("Las contraseñas no coinciden.");
+            return;
         }
-    }
 
-    // server se pasa como parámetro para que esté disponible aquí
-    public static void BBDD(String server, String usuario, String password) {
-        try (Connection conexion = DriverManager.getConnection(server, usuario, password)) {
-            System.out.println("Conexión exitosa a la base de datos ");
-        } catch (Exception e) {
-            System.out.println("Error en la conexión a la base de datos: " + e.getMessage());
+        System.out.print("Introduzca el email: ");
+        String email = teclado.nextLine();
+
+        String sqlCheck  = "SELECT * FROM usuarios WHERE usuario = ?";
+        String sqlInsert = "INSERT INTO usuarios (usuario, contraseña, salt, email) VALUES (?, ?, ?, ?)";
+
+        try (Connection conexion = DriverManager.getConnection(servidor, usuar, passwd);
+             PreparedStatement stmtCheck  = conexion.prepareStatement(sqlCheck);
+             PreparedStatement stmtInsert = conexion.prepareStatement(sqlInsert)) {
+
+            stmtCheck.setString(1, usuario);
+            ResultSet rs = stmtCheck.executeQuery();
+
+            if (rs.next()) {
+                System.out.println("El usuario ya existe.");
+            } else {
+                String salt = generarSalt();
+                String hash = generarHash(salt + contraseña);
+
+                stmtInsert.setString(1, usuario);
+                stmtInsert.setString(2, hash);
+                stmtInsert.setString(3, salt);
+                stmtInsert.setString(4, email);
+                stmtInsert.executeUpdate();
+                System.out.println("Usuario registrado correctamente.");
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error al conectar con la base de datos: " + e.getMessage());
         }
     }
 }
