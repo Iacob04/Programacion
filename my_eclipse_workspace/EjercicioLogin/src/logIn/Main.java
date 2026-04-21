@@ -63,9 +63,10 @@ public class Main {
         String sqlTable = "CREATE TABLE IF NOT EXISTS login_db.usuarios (" +
                           "id INT AUTO_INCREMENT PRIMARY KEY, " +
                           "usuario VARCHAR(50) NOT NULL UNIQUE, " +
-                          "contraseña VARCHAR(255) NOT NULL, " +
+                          "hash VARCHAR(255) NOT NULL, " +
                           "salt VARCHAR(100) NOT NULL, " +
-                          "email VARCHAR(100) NOT NULL UNIQUE)";
+                          "email VARCHAR(100) NOT NULL UNIQUE, " +
+                          "prioridad TINYINT NOT NULL CHECK (prioridad IN (1, 2, 3)))";
 
         try (Connection conexion = DriverManager.getConnection(servidorBase, usuar, passwd);
              PreparedStatement stmtDB    = conexion.prepareStatement(sqlDB);
@@ -105,7 +106,7 @@ public class Main {
         System.out.print("Introduzca la contraseña: ");
         String contraseña = teclado.nextLine();
 
-        String sql = "SELECT contraseña, salt FROM usuarios WHERE usuario = ?";
+        String sql = "SELECT hash, salt, prioridad FROM usuarios WHERE usuario = ?";
 
         try (Connection conexion = DriverManager.getConnection(servidor, usuar, passwd);
              PreparedStatement stmt = conexion.prepareStatement(sql)) {
@@ -114,12 +115,13 @@ public class Main {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                String hashGuardado = rs.getString("contraseña");
+                String hashGuardado = rs.getString("hash");
                 String salt         = rs.getString("salt");
                 String hashIntento  = generarHash(salt + contraseña);
 
                 if (hashGuardado.equals(hashIntento)) {
-                    System.out.println("Sesión iniciada como: " + usuario);
+                    int prioridad = rs.getInt("prioridad");
+                    System.out.println("Sesión iniciada como: " + usuario + " (prioridad " + prioridad + ")");
                 } else {
                     System.out.println("Usuario o contraseña incorrectos.");
                 }
@@ -150,8 +152,21 @@ public class Main {
         System.out.print("Introduzca el email: ");
         String email = teclado.nextLine();
 
+        System.out.print("Introduzca la prioridad (1, 2 o 3): ");
+        int prioridad;
+        try {
+            prioridad = Integer.parseInt(teclado.nextLine().trim());
+            if (prioridad < 1 || prioridad > 3) {
+                System.out.println("La prioridad debe ser 1, 2 o 3.");
+                return;
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Prioridad no válida.");
+            return;
+        }
+
         String sqlCheck  = "SELECT * FROM usuarios WHERE usuario = ?";
-        String sqlInsert = "INSERT INTO usuarios (usuario, contraseña, salt, email) VALUES (?, ?, ?, ?)";
+        String sqlInsert = "INSERT INTO usuarios (usuario, hash, salt, email, prioridad) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection conexion = DriverManager.getConnection(servidor, usuar, passwd);
              PreparedStatement stmtCheck  = conexion.prepareStatement(sqlCheck);
@@ -170,6 +185,7 @@ public class Main {
                 stmtInsert.setString(2, hash);
                 stmtInsert.setString(3, salt);
                 stmtInsert.setString(4, email);
+                stmtInsert.setInt(5, prioridad);
                 stmtInsert.executeUpdate();
                 System.out.println("Usuario registrado correctamente.");
             }
