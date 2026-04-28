@@ -1,5 +1,3 @@
-package boletin_24;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -7,103 +5,76 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Scanner;
 
-public class ejercicio7 {
+public class Ejercicio7 {
 
-	public static void main(String[] args) {
-		String fichero = "/home/alumno/login.txt";
-		HashMap<String,String>diccionario = leerFichero(fichero);
-		nuevoUsuario(diccionario, fichero);
-		diccionario = leerFichero(fichero);
-		System.out.println(diccionario);
-		comprobarUsuario(diccionario);
-		
-	}
-	
-	public static HashMap<String, String> leerFichero(String fichero) {
-		
-		HashMap<String,String>diccionario = new HashMap<>();
-		try(BufferedReader lector = new BufferedReader(new FileReader(fichero))) {
-			
-			String linea;
-			
-			while((linea = lector.readLine())!= null) {
-				int posicion = linea.indexOf(":");
-				diccionario.put(linea.substring(0, posicion), linea.substring(posicion+1));
-			
-			}
-			
-		}catch(Exception e) {
-			
-			System.out.println("Fichero inexistente o imposible acceder a el");
-		}
-		if (diccionario.size() == 0) {
-			System.out.println("Fichero vacío");
-		}
-		return diccionario;
-		
-	}
-	
-	
-	
-	public static void nuevoUsuario(HashMap<String, String> diccionario, String fichero) {
-		
-		
-		Scanner teclado = new Scanner(System.in);
-		System.out.println("Nuevo Usuario: ");
-		String usuario = teclado.nextLine()	;
-		System.out.println("Contraseña: ");
-		String password = teclado.nextLine();
-		System.out.println("Repita la Contraseña: ");
-		String passwordRepetida = teclado.nextLine();
-		teclado.close();
-		
-		if(password.equals(passwordRepetida)== false) {
-			System.out.println("Las contraseñas no coinciden");
-			
-		}
-		else if(diccionario.containsKey(usuario)== true) {
-			System.out.println("Ese usuario ya existe");
-		}
-		else if(usuario.indexOf(":")>=0 || password.indexOf(":")>=0) {
-			System.out.println("Ni el usuario ni la contraseña ueden contener el caracter ':'");
-		}
-		
-		else grabarEnFichero(usuario,password,fichero);
-		
-	}
+    public static void main(String[] args) {
 
-	public static void grabarEnFichero(String usuario, String password, String fichero) {
-		System.out.println("Grabando fichero");
-		
-		try(PrintWriter pluma = new PrintWriter(new FileWriter(fichero,true))) {
-			
-			pluma.printf("%s:%s\n",usuario,password);
-			
-	
-		}catch (Exception e) {
-			System.out.println("Error: " + e.getMessage());
-		}
-		
-	}
-	public static void comprobarUsuario(HashMap<String,String> diccionario) {
-		
-		Scanner teclado = new Scanner(System.in);
-		System.out.println("Usuario: ");
-		String usuario = teclado.nextLine();
-		System.out.println("Contraseña: ");
-		String password = teclado.nextLine();
-		teclado.close();
-		
-		if(diccionario.containsKey(usuario)== false) {
-			System.out.println("Usuario no encontrado");
-		}
-		else if(diccionario.get(usuario).equals(password)== false) {
-			System.out.println("La contraseña es incorrrecta");
-		}
-		else {
-			System.out.println("Usuario y contraseña correctas");
-		}
-		
-		
-	}
+        String fichero = "/home/alumno/login.txt";
+
+        // Cargamos el fichero en un HashMap para comprobar duplicados
+        HashMap<String, String> usuarios = leerFichero(fichero);
+
+        nuevoUsuario(usuarios, fichero);
+    }
+
+    public static HashMap<String, String> leerFichero(String fichero) {
+
+        HashMap<String, String> diccionario = new HashMap<>();
+
+        try (BufferedReader lector = new BufferedReader(new FileReader(fichero))) {
+
+            String linea;
+            while ((linea = lector.readLine()) != null) {
+                int posicion = linea.indexOf(":");
+                diccionario.put(linea.substring(0, posicion), linea.substring(posicion + 1));
+            }
+
+        } catch (Exception e) {
+            // Si no existe el fichero simplemente empezamos con el diccionario vacío
+            System.out.println("El fichero no existe, se creará uno nuevo");
+        }
+
+        return diccionario;
+    }
+
+    public static void nuevoUsuario(HashMap<String, String> usuarios, String fichero) {
+
+        Scanner teclado = new Scanner(System.in);
+
+        System.out.print("Introduce el nombre del usuario: ");
+        String usuario = teclado.nextLine();
+
+        System.out.print("Introduce la contraseña: ");
+        String password = teclado.nextLine();
+
+        System.out.print("Vuelve a introducir la contraseña de nuevo: ");
+        String passwordRepetida = teclado.nextLine();
+        teclado.close();
+
+        // Validamos que las contraseñas coinciden
+        if (password.equals(passwordRepetida) == false) {
+            System.out.println("Las contraseñas no son iguales. No se puede grabar la nueva cuenta");
+            return;
+        }
+
+        // Validamos que el usuario no existe ya
+        if (usuarios.containsKey(usuario)) {
+            System.out.println("Ese usuario ya existe");
+            return;
+        }
+
+        // Validamos que ni usuario ni contraseña contienen ':'
+        if (usuario.contains(":") || password.contains(":")) {
+            System.out.println("Ni el usuario ni la contraseña pueden contener el carácter ':'");
+            return;
+        }
+
+        // Grabamos en el fichero en modo añadir (true)
+        try (PrintWriter pluma = new PrintWriter(new FileWriter(fichero, true))) {
+            pluma.printf("%s:%s%n", usuario, password);
+            System.out.println("Cuenta de usuario grabada correctamente");
+        } catch (Exception e) {
+            System.out.println("Error al escribir el fichero: " + e.getMessage());
+        }
+    }
 }
