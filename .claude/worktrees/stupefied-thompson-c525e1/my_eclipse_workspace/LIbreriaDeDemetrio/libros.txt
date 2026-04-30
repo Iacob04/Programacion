@@ -1,0 +1,7 @@
+
+Demetrio Imedio;El arte de no entender Java;Informatica;22.50
+German Tequilla;Cocina para torpes;Cocina;14.99
+Ines Perado;Memorias de un lunes;Novela;18.00
+Felipe Lotas;Java para valientes;Informatica;29.95
+Rosa Gomez;El gran libro de la nada;Novela;12.50
+Alberto Rija;Manual del perfecto administrativo;Administracion;19.75

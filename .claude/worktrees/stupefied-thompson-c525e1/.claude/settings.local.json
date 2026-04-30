@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python gen_pdf_examen.py)",
+      "Bash(python3 \"C:\\\\Users\\\\alexi\\\\Programacion\\\\my_eclipse_workspace\\\\ultimoExamen\\\\gen_pdf_examen.py\")",
+      "Bash(py \"C:\\\\Users\\\\alexi\\\\Programacion\\\\my_eclipse_workspace\\\\ultimoExamen\\\\gen_pdf_examen.py\")",
+      "Bash(cp \"C:\\\\Users\\\\alexi\\\\Programacion\\\\my_eclipse_workspace\\\\ultimoExamen\\\\GUIA_EXAMEN_JAVA.pdf\" \"C:\\\\Users\\\\alexi\\\\Desktop\\\\GUIA_EXAMEN_JAVA.pdf\")",
+      "Read(//c/Users/alexi/Desktop/**)"
+    ]
+  }
+}
