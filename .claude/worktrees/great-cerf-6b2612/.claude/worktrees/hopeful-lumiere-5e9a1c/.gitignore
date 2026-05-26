@@ -1,0 +1,40 @@
+# === JAVA ===
+*.class
+*.jar
+*.war
+*.ear
+target/
+bin/
+build/
+out/
+*.log
+
+# === ECLIPSE (compartibles vs ignorados) ===
+# Ignorar configuración de workspace específica
+.settings/
+.metadata/
+.recommenders/
+RemoteSystemsTempFiles/
+
+# PERO mantener archivos de proyecto individuales
+# .project
+# .classpath
+
+# === MAVEN/GRADLE ===
+target/
+build/
+.gradle/
+.mvn/
+dependency-reduced-pom.xml
+
+# === SISTEMA ===
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# === OTROS ===
+*.tmp
+*.bak
+*.orig

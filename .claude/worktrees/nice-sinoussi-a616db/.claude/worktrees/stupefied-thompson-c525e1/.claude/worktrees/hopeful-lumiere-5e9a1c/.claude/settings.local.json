@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(xargs cat *)",
+      "Bash(python3 -c \"from reportlab.lib.pagesizes import A4; print\\('reportlab ok'\\)\")",
+      "Bash(python -c \"from reportlab.lib.pagesizes import A4; print\\('reportlab ok'\\)\")",
+      "Bash(pip install *)",
+      "PowerShell(python --version)",
+      "PowerShell(pip install reportlab 2>&1)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git config *)",
+      "Read(//c/Users/alexi/Programacion/**)"
+    ]
+  }
+}

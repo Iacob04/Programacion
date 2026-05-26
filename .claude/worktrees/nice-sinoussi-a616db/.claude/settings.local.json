@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\alexi\\\\Programacion\\\\Python\\\\\" -ErrorAction SilentlyContinue | Select-Object Name, @{Name=\"Type\"; Expression={if\\($_.PSIsContainer\\){\"Folder\"}else{\"File\"}}} | Format-Table -AutoSize)"
+    ]
+  }
+}

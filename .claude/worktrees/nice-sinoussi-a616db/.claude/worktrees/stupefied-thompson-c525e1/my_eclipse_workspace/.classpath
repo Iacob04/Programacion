@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry excluding="Boletin_13/src/|Boletin_1/src/|Empresa_Transportes/src/|manejodeficheros/src/|Boletín_8/src/|boletin_15/src/|boletín_2/src/|LIbreriaDeDemetrio/src/|Boletin_3/src/|Examen_26_feb/src/|porraBar_Apuesta/src/|Examen_27_noviembre/src/|Medico/src/|protectora_animales/src/|Badminton/src/|apuntes_ficheros/src/|Ejercicios_para_examen/src/|examenesAutoescula/src/|Boletin_18/src/|Boletin_23/src/|Boletin_5/src/|Boletin_24/src/|Banco/src/|Boletín_9/src/|Lista_tareas/src/|Examen_27enero/src/|Boletín_5/src/|Boletin_4/src/|Concesionario/src/|Futbol/src/|soluciones_boletines/boletin23/|soluciones_boletines/boletin24/" kind="src" path=""/>
+	<classpathentry kind="src" path="apuntes_ficheros/src"/>
+	<classpathentry kind="src" path="Badminton/src"/>
+	<classpathentry kind="src" path="Banco/src"/>
+	<classpathentry kind="src" path="Boletin_1/src"/>
+	<classpathentry kind="src" path="Boletin_13/src"/>
+	<classpathentry kind="src" path="boletin_15/src"/>
+	<classpathentry kind="src" path="Boletin_18/src"/>
+	<classpathentry kind="src" path="boletín_2/src"/>
+	<classpathentry kind="src" path="Boletin_23/src"/>
+	<classpathentry kind="src" path="Boletin_24/src"/>
+	<classpathentry kind="src" path="Boletin_3/src"/>
+	<classpathentry kind="src" path="Boletin_4/src"/>
+	<classpathentry kind="src" path="Boletin_5/src"/>
+	<classpathentry kind="src" path="Boletín_5/src"/>
+	<classpathentry kind="src" path="Boletín_8/src"/>
+	<classpathentry kind="src" path="Boletín_9/src"/>
+	<classpathentry kind="src" path="Concesionario/src"/>
+	<classpathentry kind="src" path="Ejercicios_para_examen/src"/>
+	<classpathentry kind="src" path="Empresa_Transportes/src"/>
+	<classpathentry kind="src" path="Examen_26_feb/src"/>
+	<classpathentry kind="src" path="Examen_27_noviembre/src"/>
+	<classpathentry kind="src" path="Examen_27enero/src"/>
+	<classpathentry kind="src" path="examenesAutoescula/src"/>
+	<classpathentry kind="src" path="Futbol/src"/>
+	<classpathentry kind="src" path="LIbreriaDeDemetrio/src"/>
+	<classpathentry kind="src" path="Lista_tareas/src"/>
+	<classpathentry kind="src" path="manejodeficheros/src"/>
+	<classpathentry kind="src" path="Medico/src"/>
+	<classpathentry kind="src" path="porraBar_Apuesta/src"/>
+	<classpathentry kind="src" path="protectora_animales/src"/>
+	<classpathentry kind="src" path="soluciones_boletines/boletin23"/>
+	<classpathentry kind="src" path="soluciones_boletines/boletin24"/>
+	<classpathentry kind="output" path="Badminton/bin"/>
+</classpath>
