@@ -96,7 +96,7 @@ Compito como **jugador internacional de bádminton** representando a clubes madr
 | Canal | Enlace |
 |-------|--------|
 | 💼 LinkedIn | [gabriel-alexandru-iacob-056656398](https://www.linkedin.com/in/gabriel-alexandru-iacob-056656398/) |
-| 📧 Email | [gabriel.iacob2@educa.madrid.org](mailto:gabriel.iacob2@educa.madrid.org) |
+| 📧 Email | [gabriel.iacob@educa.madrid.org](mailto:gabriel.iacob2@educa.madrid.org) |
 | 📍 Ubicación | Madrid, España — disponible para prácticas in-company |
 | 🎓 Formación | 1º DAM · Desarrollo de Aplicaciones Multiplataforma |
 
