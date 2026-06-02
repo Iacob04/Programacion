@@ -21,7 +21,7 @@ public class Naciones {
                      "WHERE continents.name = ? " +
                      "ORDER BY area DESC";
         
-        String continente = "Euope";
+        String continente = "Europe";
 
  
 
