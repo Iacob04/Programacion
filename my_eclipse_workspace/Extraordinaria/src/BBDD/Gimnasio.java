@@ -167,17 +167,17 @@ public class Gimnasio {
 				
 			}
 			else {
-				System.out.println("La marca "+ marca +" tiene "+ cuantos + " vehículos: ");
+				System.out.println("La clase con id "+ clase_id +" tiene "+ cuantos + " inscritos: ");
 				rs.afterLast();
 				while (rs.previous()) {
-					
-					String modelo = rs.getString("modelo");
-					double precio = rs.getDouble("precio");
-		            
-		            
-		            	System.out.printf("-  Modelo: %s | Precio: %.2f   %n" , modelo,precio);
-		            
-		            
+
+					String nombre = rs.getString("nombre");
+					String fecha = rs.getString("fecha");
+
+
+		            	System.out.printf("-  Nombre: %s | Fecha: %s   %n" , nombre, fecha);
+
+
 		        }
 			}
 		
