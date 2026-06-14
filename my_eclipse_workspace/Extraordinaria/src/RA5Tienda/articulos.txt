@@ -1,0 +1,5 @@
+A001 Raton 9.95
+A002 Teclado 19.50
+A003 Monitor 129.00
+A004 Webcam 34.20
+A005 Altavoces 22.75

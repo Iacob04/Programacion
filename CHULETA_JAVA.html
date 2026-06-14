@@ -2641,7 +2641,159 @@ public class PatronExamenPOO {
         System.out.println(&quot;Total: &quot; + Empleado.getContador());
         empresa.despedir(&quot;EMP-001&quot;);
     }
-}</textarea></div></section></div></div>
+}</textarea></div></section><section class="card" data-search="patron completo interfaz lambda producto pvp calculadoraprecio functionalinterface constantes iva descuento toString locale coma decimal cuatro archivos clase interfaz funcional metodo unico implementacion examen ordinaria cafeteria precio base pvp cliente"><h3 class="cardtitle">★ Patrón completo: clase + interfaz + lambdas (RA7)</h3><div class="note">El patrón estrella de RA7. Cuatro piezas: una <b>clase</b> con <code>toString</code>, una <b>interfaz de constantes</b>, una <b>interfaz funcional</b> (un solo método), y las <b>lambdas</b> en el main. La lambda <code>p -&gt; {...}</code> ES la implementación del método de la interfaz funcional.</div><div class="note"><b>Las constantes en una interfaz</b> son <code>public static final</code> automáticamente: basta <code>double IVA = 0.10;</code>. La <code>@FunctionalInterface</code> falla a compilar si tiene más de un método abstracto.</div><div class="codewrap"><button class="copy"><svg viewBox="0 0 24 24" width="15" height="15"><path fill="currentColor" d="M16 1H4a2 2 0 0 0-2 2v14h2V3h12V1zm3 4H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm0 16H8V7h11v14z"/></svg><span>Copiar</span></button><pre><code><span class="c">// === Producto.java ===</span>
+<span class="k">package</span> ordinaria;
+<span class="k">import</span> java.util.Locale;
+
+<span class="k">public</span> <span class="k">class</span> <span class="t">Producto</span> {
+    <span class="k">private</span> <span class="t">String</span> nombre;
+    <span class="k">private</span> <span class="k">double</span> precio;
+
+    <span class="k">public</span> <span class="t">Producto</span>(<span class="t">String</span> nombre, <span class="k">double</span> precio) {
+        <span class="k">this</span>.nombre = nombre;
+        <span class="k">this</span>.precio = precio;
+    }
+    <span class="k">public</span> <span class="k">double</span> getPrecio() { <span class="k">return</span> precio; }
+
+    <span class="k">@Override</span>
+    <span class="k">public</span> <span class="t">String</span> toString() {
+        <span class="c">// coma decimal europea con Locale</span>
+        <span class="t">String</span> p = <span class="t">String</span>.format(<span class="t">Locale</span>.of(<span class="s">"es"</span>,<span class="s">"ES"</span>), <span class="s">"%.2f"</span>, precio);
+        <span class="k">return</span> <span class="s">"Producto: "</span> + nombre + <span class="s">"\n"</span> + <span class="s">"Precio Base: "</span> + p + <span class="s">"€"</span>;
+    }
+}
+
+<span class="c">// === PvP.java (interfaz de constantes) ===</span>
+<span class="k">package</span> ordinaria;
+<span class="k">public</span> <span class="k">interface</span> <span class="t">PvP</span> {
+    <span class="k">double</span> <span class="n">IVA</span> = <span class="n">0.10</span>;        <span class="c">// en interfaz ya es public static final</span>
+    <span class="k">double</span> <span class="n">DESCUENTO</span> = <span class="n">0.05</span>;
+}
+
+<span class="c">// === CalculadoraPrecio.java (interfaz FUNCIONAL: 1 metodo) ===</span>
+<span class="k">package</span> ordinaria;
+<span class="k">@FunctionalInterface</span>
+<span class="k">public</span> <span class="k">interface</span> <span class="t">CalculadoraPrecio</span> {
+    <span class="k">double</span> calcular(<span class="t">Producto</span> p);
+}
+
+<span class="c">// === Principal.java ===</span>
+<span class="k">package</span> ordinaria;
+<span class="k">public</span> <span class="k">class</span> <span class="t">Principal</span> {
+    <span class="k">public</span> <span class="k">static</span> <span class="k">void</span> main(<span class="t">String</span>[] args) {
+        <span class="t">Producto</span> cap = <span class="k">new</span> <span class="t">Producto</span>(<span class="s">"Capuccino"</span>, <span class="n">4.5</span>);
+
+        <span class="c">// la LAMBDA es la implementacion del metodo calcular</span>
+        <span class="t">CalculadoraPrecio</span> normal = p -&gt; {
+            <span class="k">double</span> r = p.getPrecio() * (<span class="n">1</span> + <span class="t">PvP</span>.<span class="n">IVA</span>);
+            <span class="k">return</span> <span class="t">Math</span>.round(r * <span class="n">100.0</span>) / <span class="n">100.0</span>;
+        };
+        <span class="t">CalculadoraPrecio</span> habitual = p -&gt; {
+            <span class="k">double</span> r = p.getPrecio() * (<span class="n">1</span> + <span class="t">PvP</span>.<span class="n">IVA</span>) * (<span class="n">1</span> - <span class="t">PvP</span>.<span class="n">DESCUENTO</span>);
+            <span class="k">return</span> <span class="t">Math</span>.round(r * <span class="n">100.0</span>) / <span class="n">100.0</span>;
+        };
+
+        <span class="t">System</span>.out.println(cap);   <span class="c">// usa el toString</span>
+        <span class="t">System</span>.out.println(<span class="s">"PvP Cliente Normal: "</span> + normal.calcular(cap) + <span class="s">"€"</span>);
+        <span class="t">System</span>.out.println(<span class="s">"PvP Cliente Habitual: "</span> + habitual.calcular(cap) + <span class="s">"€"</span>);
+    }
+}</code></pre><textarea class="src" hidden>// === Producto.java ===
+package ordinaria;
+import java.util.Locale;
+
+public class Producto {
+    private String nombre;
+    private double precio;
+
+    public Producto(String nombre, double precio) {
+        this.nombre = nombre;
+        this.precio = precio;
+    }
+    public double getPrecio() { return precio; }
+
+    @Override
+    public String toString() {
+        // coma decimal europea con Locale
+        String p = String.format(Locale.of("es","ES"), "%.2f", precio);
+        return "Producto: " + nombre + "\n" + "Precio Base: " + p + "\u20ac";
+    }
+}
+
+// === PvP.java (interfaz de constantes) ===
+package ordinaria;
+public interface PvP {
+    double IVA = 0.10;        // en interfaz ya es public static final
+    double DESCUENTO = 0.05;
+}
+
+// === CalculadoraPrecio.java (interfaz FUNCIONAL: 1 metodo) ===
+package ordinaria;
+@FunctionalInterface
+public interface CalculadoraPrecio {
+    double calcular(Producto p);
+}
+
+// === Principal.java ===
+package ordinaria;
+public class Principal {
+    public static void main(String[] args) {
+        Producto cap = new Producto("Capuccino", 4.5);
+
+        // la LAMBDA es la implementacion del metodo calcular
+        CalculadoraPrecio normal = p -&gt; {
+            double r = p.getPrecio() * (1 + PvP.IVA);
+            return Math.round(r * 100.0) / 100.0;
+        };
+        CalculadoraPrecio habitual = p -&gt; {
+            double r = p.getPrecio() * (1 + PvP.IVA) * (1 - PvP.DESCUENTO);
+            return Math.round(r * 100.0) / 100.0;
+        };
+
+        System.out.println(cap);   // usa el toString
+        System.out.println("PvP Cliente Normal: " + normal.calcular(cap) + "\u20ac");
+        System.out.println("PvP Cliente Habitual: " + habitual.calcular(cap) + "\u20ac");
+    }
+}</textarea></div></section><section class="card" data-search="porcentajes encadenados multiplicar factor 1 mas x iva descuento recargo sumar restar error sumar suelto centimos redondear dos decimales math round concepto clave precio anual fraccionado sobre precio con iva"><h3 class="cardtitle">Porcentajes encadenados (IVA, descuentos, recargos)</h3><div class="note">El concepto que más se atasca. Un porcentaje <b>multiplica</b> como <code>(1 ± x)</code>, nunca se suma como número suelto. Sumar = añade céntimos; multiplicar = aplica el %. Para encadenar (recargo sobre un precio que YA lleva IVA), multiplicas factores uno tras otro.</div><div class="codewrap"><button class="copy"><svg viewBox="0 0 24 24" width="15" height="15"><path fill="currentColor" d="M16 1H4a2 2 0 0 0-2 2v14h2V3h12V1zm3 4H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm0 16H8V7h11v14z"/></svg><span>Copiar</span></button><pre><code><span class="c">// Un PORCENTAJE siempre MULTIPLICA como (1 +/- x). NUNCA se suma suelto.</span>
+
+<span class="k">double</span> base = <span class="n">45.0</span>;
+
+<span class="c">// SUMAR un % (IVA del 21%):  multiplica por (1 + 0.21)</span>
+<span class="k">double</span> conIva = base * (<span class="n">1</span> + <span class="n">0.21</span>);          <span class="c">// 45 * 1.21 = 54.45</span>
+
+<span class="c">// RESTAR un % (descuento 5%): multiplica por (1 - 0.05)</span>
+<span class="k">double</span> conDto = base * (<span class="n">1</span> - <span class="n">0.05</span>);          <span class="c">// 45 * 0.95 = 42.75</span>
+
+<span class="c">// ENCADENAR % sobre un valor YA modificado: multiplica factores seguidos</span>
+<span class="c">// "precio + IVA y LUEGO recargo 8% sobre ese total"</span>
+<span class="k">double</span> total = base * (<span class="n">1</span> + <span class="n">0.21</span>) * (<span class="n">1</span> + <span class="n">0.08</span>);   <span class="c">// 45*1.21*1.08 = 58.81</span>
+
+<span class="c">// ERROR tipico 1: sumar el numero suelto (suma 8 centimos, no 8%)</span>
+<span class="c">//   base * 1.21 + 0.08      -&gt;  54.53  MAL</span>
+<span class="c">// ERROR tipico 2: sumar los dos % al precio base (no encadena)</span>
+<span class="c">//   base * (1 + 0.21 + 0.08) -&gt;  58.05  MAL (no es lo que pide el enunciado)</span>
+
+<span class="c">// Redondear a 2 decimales SIEMPRE al final:</span>
+total = <span class="t">Math</span>.round(total * <span class="n">100.0</span>) / <span class="n">100.0</span>;</code></pre><textarea class="src" hidden>// Un PORCENTAJE siempre MULTIPLICA como (1 +/- x). NUNCA se suma suelto.
+
+double base = 45.0;
+
+// SUMAR un % (IVA del 21%):  multiplica por (1 + 0.21)
+double conIva = base * (1 + 0.21);          // 45 * 1.21 = 54.45
+
+// RESTAR un % (descuento 5%): multiplica por (1 - 0.05)
+double conDto = base * (1 - 0.05);          // 45 * 0.95 = 42.75
+
+// ENCADENAR % sobre un valor YA modificado: multiplica factores seguidos
+// "precio + IVA y LUEGO recargo 8% sobre ese total"
+double total = base * (1 + 0.21) * (1 + 0.08);   // 45*1.21*1.08 = 58.81
+
+// ERROR tipico 1: sumar el numero suelto (suma 8 centimos, no 8%)
+//   base * 1.21 + 0.08      -&gt;  54.53  MAL
+// ERROR tipico 2: sumar los dos % al precio base (no encadena)
+//   base * (1 + 0.21 + 0.08) -&gt;  58.05  MAL (no es lo que pide el enunciado)
+
+// Redondear a 2 decimales SIEMPRE al final:
+total = Math.round(total * 100.0) / 100.0;</textarea></div></section></div></div>
 <div class="rasection" id="ra5" style="--c:#c3a6ff"><div class="rahead"><span class="rabadge">RA5</span><div><h2>Lectura y escritura de información</h2><span class="raunidad">UT7</span></div></div><div class="cards"><section class="card" data-search="leer ficheros de texto — 4 formas import java.io.*;
 import java.nio.file.*;
 import java.util.*;
@@ -2936,7 +3088,227 @@ try (DataInputStream e = new DataInputStream(new FileInputStream(ruta))) {
     System.out.println(&quot;No existe el fichero&quot;);
 } catch (IOException e) {
     System.out.println(&quot;Error E/S: &quot; + e.getMessage());
-}</textarea></div></section></div></div>
+}</textarea></div></section><section class="card" data-search="leer csv con listas paralelas y particula y tres filtros cabecera lineas mal formadas fichero vacio split coma unir metodo auxiliar ordinaria patron examen profesor no hay datos en el fichero bufferedreader filereader catch"><h3 class="cardtitle">★ Patrón CSV completo (listas paralelas + la "y")</h3><div class="note">El patrón estrella de RA5. UNA lista por columna, los TRES filtros (cabecera / líneas mal formadas / fichero vacío), y el método <code>unir()</code> para la "y". La "y" va antes del <b>último</b> elemento; con un solo elemento NO aparece.</div><div class="codewrap"><button class="copy"><svg viewBox="0 0 24 24" width="15" height="15"><path fill="currentColor" d="M16 1H4a2 2 0 0 0-2 2v14h2V3h12V1zm3 4H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm0 16H8V7h11v14z"/></svg><span>Copiar</span></button><pre><code><span class="k">package</span> ordinaria;
+
+<span class="k">import</span> java.io.BufferedReader;
+<span class="k">import</span> java.io.FileReader;
+<span class="k">import</span> java.util.ArrayList;
+
+<span class="k">public</span> <span class="k">class</span> <span class="t">LeerCSV</span> {
+
+    <span class="k">public</span> <span class="k">static</span> <span class="k">void</span> main(<span class="t">String</span>[] args) {
+        leerFichero(<span class="s">"paises.csv"</span>);
+    }
+
+    <span class="k">public</span> <span class="k">static</span> <span class="k">void</span> leerFichero(<span class="t">String</span> fichero) {
+
+        <span class="c">// UNA lista por columna (listas paralelas)</span>
+        <span class="t">ArrayList</span>&lt;<span class="t">String</span>&gt; paises    = <span class="k">new</span> <span class="t">ArrayList</span>&lt;&gt;();
+        <span class="t">ArrayList</span>&lt;<span class="t">String</span>&gt; capitales = <span class="k">new</span> <span class="t">ArrayList</span>&lt;&gt;();
+
+        <span class="k">try</span> (<span class="t">BufferedReader</span> lec = <span class="k">new</span> <span class="t">BufferedReader</span>(<span class="k">new</span> <span class="t">FileReader</span>(fichero))) {
+
+            lec.readLine();                 <span class="c">// FILTRO 1: saltar cabecera</span>
+
+            <span class="t">String</span> linea;
+            <span class="k">while</span> ((linea = lec.readLine()) != <span class="k">null</span>) {
+                <span class="t">String</span>[] c = linea.split(<span class="s">","</span>);      <span class="c">// separador EXACTO</span>
+                <span class="k">if</span> (c.length != <span class="n">4</span>) <span class="k">continue</span>;        <span class="c">// FILTRO 2: lineas mal formadas</span>
+                paises.add(c[<span class="n">0</span>]);
+                capitales.add(c[<span class="n">1</span>]);
+            }
+
+            <span class="k">if</span> (paises.isEmpty()) {                 <span class="c">// FILTRO 3: fichero vacio</span>
+                <span class="t">System</span>.out.println(<span class="s">"No hay datos en el fichero"</span>);
+                <span class="k">return</span>;
+            }
+
+            <span class="t">System</span>.out.println(<span class="s">"Paises en el fichero: "</span> + paises.size());
+            <span class="t">System</span>.out.println(<span class="s">"Nombres: "</span> + unir(paises));
+            <span class="t">System</span>.out.println(<span class="s">"Capitales: "</span> + unir(capitales));
+
+        } <span class="k">catch</span> (<span class="t">Exception</span> e) {
+            <span class="t">System</span>.out.println(<span class="s">"Error: "</span> + e.getMessage());   <span class="c">// NUNCA catch vacio</span>
+        }
+    }
+
+    <span class="c">// Une la lista con comas y "y" antes del ULTIMO elemento</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="t">String</span> unir(<span class="t">ArrayList</span>&lt;<span class="t">String</span>&gt; lista) {
+        <span class="t">String</span> r = <span class="s">""</span>;
+        <span class="k">for</span> (<span class="k">int</span> i = <span class="n">0</span>; i &lt; lista.size(); i++) {
+            <span class="k">if</span> (i == <span class="n">0</span>)                      r = lista.get(i);
+            <span class="k">else</span> <span class="k">if</span> (i == lista.size() - <span class="n">1</span>)  r = r + <span class="s">" y "</span> + lista.get(i);
+            <span class="k">else</span>                             r = r + <span class="s">", "</span> + lista.get(i);
+        }
+        <span class="k">return</span> r;
+    }
+}</code></pre><textarea class="src" hidden>package ordinaria;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.util.ArrayList;
+
+public class LeerCSV {
+
+    public static void main(String[] args) {
+        leerFichero("paises.csv");
+    }
+
+    public static void leerFichero(String fichero) {
+
+        // UNA lista por columna (listas paralelas)
+        ArrayList&lt;String&gt; paises    = new ArrayList&lt;&gt;();
+        ArrayList&lt;String&gt; capitales = new ArrayList&lt;&gt;();
+
+        try (BufferedReader lec = new BufferedReader(new FileReader(fichero))) {
+
+            lec.readLine();                 // FILTRO 1: saltar cabecera
+
+            String linea;
+            while ((linea = lec.readLine()) != null) {
+                String[] c = linea.split(",");      // separador EXACTO
+                if (c.length != 4) continue;        // FILTRO 2: lineas mal formadas
+                paises.add(c[0]);
+                capitales.add(c[1]);
+            }
+
+            if (paises.isEmpty()) {                 // FILTRO 3: fichero vacio
+                System.out.println("No hay datos en el fichero");
+                return;
+            }
+
+            System.out.println("Paises en el fichero: " + paises.size());
+            System.out.println("Nombres: " + unir(paises));
+            System.out.println("Capitales: " + unir(capitales));
+
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());   // NUNCA catch vacio
+        }
+    }
+
+    // Une la lista con comas y "y" antes del ULTIMO elemento
+    public static String unir(ArrayList&lt;String&gt; lista) {
+        String r = "";
+        for (int i = 0; i &lt; lista.size(); i++) {
+            if (i == 0)                      r = lista.get(i);
+            else if (i == lista.size() - 1)  r = r + " y " + lista.get(i);
+            else                             r = r + ", " + lista.get(i);
+        }
+        return r;
+    }
+}</textarea></div></section><section class="card" data-search="reescribir fichero quitar columna sobrescribir printwriter filewriter sin append leer en memoria antes de escribir ignorar lineas mal formadas mismo fichero original patron ejercicio 2 ra5 examen ordinaria"><h3 class="cardtitle">Reescribir un fichero quitando una columna</h3><div class="note"><b>Regla de oro:</b> para sobrescribir el fichero que lees, primero lee TODO a una lista en memoria, cierra el lector, y LUEGO escribe. Nunca leer y escribir a la vez. <code>PrintWriter</code> sin <code>true</code> = sobrescribe; con <code>true</code> = añade al final (duplica).</div><div class="codewrap"><button class="copy"><svg viewBox="0 0 24 24" width="15" height="15"><path fill="currentColor" d="M16 1H4a2 2 0 0 0-2 2v14h2V3h12V1zm3 4H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm0 16H8V7h11v14z"/></svg><span>Copiar</span></button><pre><code><span class="k">package</span> ordinaria;
+
+<span class="k">import</span> java.io.*;
+<span class="k">import</span> java.util.ArrayList;
+
+<span class="k">public</span> <span class="k">class</span> <span class="t">ReescribirCSV</span> {
+
+    <span class="k">public</span> <span class="k">static</span> <span class="k">void</span> main(<span class="t">String</span>[] args) {
+        escribir(<span class="s">"paises.csv"</span>);
+    }
+
+    <span class="k">public</span> <span class="k">static</span> <span class="k">void</span> escribir(<span class="t">String</span> fichero) {
+
+        <span class="t">ArrayList</span>&lt;<span class="t">String</span>&gt; nuevas = <span class="k">new</span> <span class="t">ArrayList</span>&lt;&gt;();
+
+        <span class="c">// 1) LEER y transformar EN MEMORIA (cerrar antes de escribir)</span>
+        <span class="k">try</span> (<span class="t">BufferedReader</span> br = <span class="k">new</span> <span class="t">BufferedReader</span>(<span class="k">new</span> <span class="t">FileReader</span>(fichero))) {
+            <span class="t">String</span> linea;
+            <span class="k">while</span> ((linea = br.readLine()) != <span class="k">null</span>) {
+                <span class="t">String</span>[] c = linea.split(<span class="s">","</span>);
+                <span class="k">if</span> (c.length != <span class="n">4</span>) <span class="k">continue</span>;          <span class="c">// ignora mal formadas</span>
+                nuevas.add(c[<span class="n">0</span>] + <span class="s">","</span> + c[<span class="n">1</span>] + <span class="s">","</span> + c[<span class="n">3</span>]);   <span class="c">// sin la col [2]</span>
+            }
+        } <span class="k">catch</span> (<span class="t">Exception</span> e) {
+            <span class="t">System</span>.out.println(<span class="s">"Error al leer: "</span> + e.getMessage());
+            <span class="k">return</span>;
+        }
+
+        <span class="c">// 2) ESCRIBIR (sin 'true' = SOBRESCRIBE, no append)</span>
+        <span class="k">try</span> (<span class="t">PrintWriter</span> pw = <span class="k">new</span> <span class="t">PrintWriter</span>(<span class="k">new</span> <span class="t">FileWriter</span>(fichero))) {
+            <span class="k">for</span> (<span class="t">String</span> l : nuevas) pw.println(l);
+            <span class="t">System</span>.out.println(<span class="s">"Fichero reescrito"</span>);
+        } <span class="k">catch</span> (<span class="t">Exception</span> e) {
+            <span class="t">System</span>.out.println(<span class="s">"Error al escribir: "</span> + e.getMessage());
+        }
+    }
+}</code></pre><textarea class="src" hidden>package ordinaria;
+
+import java.io.*;
+import java.util.ArrayList;
+
+public class ReescribirCSV {
+
+    public static void main(String[] args) {
+        escribir("paises.csv");
+    }
+
+    public static void escribir(String fichero) {
+
+        ArrayList&lt;String&gt; nuevas = new ArrayList&lt;&gt;();
+
+        // 1) LEER y transformar EN MEMORIA (cerrar antes de escribir)
+        try (BufferedReader br = new BufferedReader(new FileReader(fichero))) {
+            String linea;
+            while ((linea = br.readLine()) != null) {
+                String[] c = linea.split(",");
+                if (c.length != 4) continue;          // ignora mal formadas
+                nuevas.add(c[0] + "," + c[1] + "," + c[3]);   // sin la col [2]
+            }
+        } catch (Exception e) {
+            System.out.println("Error al leer: " + e.getMessage());
+            return;
+        }
+
+        // 2) ESCRIBIR (sin 'true' = SOBRESCRIBE, no append)
+        try (PrintWriter pw = new PrintWriter(new FileWriter(fichero))) {
+            for (String l : nuevas) pw.println(l);
+            System.out.println("Fichero reescrito");
+        } catch (Exception e) {
+            System.out.println("Error al escribir: " + e.getMessage());
+        }
+    }
+}</textarea></div></section><section class="card" data-search="media maximo leer numeros fichero parsedouble parseint convertir string a numero suma divide promedio empleado mayor antiguedad guardar nombre y valor trim"><h3 class="cardtitle">Media y máximo con datos del fichero</h3><div class="note">Los campos vienen como <code>String</code> del <code>split</code>: hay que pasarlos a número con <code>parseDouble</code>/<code>parseInt</code>. Para el "máximo con su nombre", guarda a la vez el valor <b>y</b> el dato asociado. Con <code>&gt;</code> estricto te quedas con el primero en caso de empate.</div><div class="codewrap"><button class="copy"><svg viewBox="0 0 24 24" width="15" height="15"><path fill="currentColor" d="M16 1H4a2 2 0 0 0-2 2v14h2V3h12V1zm3 4H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm0 16H8V7h11v14z"/></svg><span>Copiar</span></button><pre><code><span class="c">// Convertir String -&gt; numero al leer del fichero:</span>
+<span class="k">double</span> salario = <span class="t">Double</span>.parseDouble(c[<span class="n">2</span>]);   <span class="c">// texto -&gt; double</span>
+<span class="k">int</span> antig      = <span class="t">Integer</span>.parseInt(c[<span class="n">3</span>]);     <span class="c">// texto -&gt; int</span>
+<span class="c">// (.trim() antes si puede haber espacios: c[2].trim())</span>
+
+<span class="c">// MEDIA: suma en el bucle, divide al final</span>
+<span class="k">double</span> total = <span class="n">0</span>;
+<span class="k">for</span> (<span class="k">int</span> i = <span class="n">0</span>; i &lt; salarios.size(); i++) {
+    total = total + salarios.get(i);
+}
+<span class="k">double</span> media = total / salarios.size();
+
+<span class="c">// MAXIMO con su dato asociado (guardar nombre Y valor a la vez):</span>
+<span class="t">String</span> nombre = <span class="s">""</span>;
+<span class="k">int</span> antiguedad = <span class="n">0</span>;
+<span class="k">for</span> (<span class="k">int</span> i = <span class="n">0</span>; i &lt; antiguedades.size(); i++) {
+    <span class="k">if</span> (antiguedades.get(i) &gt; antiguedad) {   <span class="c">// &gt; estricto = el primero en empate</span>
+        antiguedad = antiguedades.get(i);
+        nombre = nombres.get(i);              <span class="c">// recuerda DE QUIEN era</span>
+    }
+}</code></pre><textarea class="src" hidden>// Convertir String -&gt; numero al leer del fichero:
+double salario = Double.parseDouble(c[2]);   // texto -&gt; double
+int antig      = Integer.parseInt(c[3]);     // texto -&gt; int
+// (.trim() antes si puede haber espacios: c[2].trim())
+
+// MEDIA: suma en el bucle, divide al final
+double total = 0;
+for (int i = 0; i &lt; salarios.size(); i++) {
+    total = total + salarios.get(i);
+}
+double media = total / salarios.size();
+
+// MAXIMO con su dato asociado (guardar nombre Y valor a la vez):
+String nombre = "";
+int antiguedad = 0;
+for (int i = 0; i &lt; antiguedades.size(); i++) {
+    if (antiguedades.get(i) &gt; antiguedad) {   // &gt; estricto = el primero en empate
+        antiguedad = antiguedades.get(i);
+        nombre = nombres.get(i);              // recuerda DE QUIEN era
+    }
+}</textarea></div></section><section class="card" data-search="errores tontos examen ruta fichero guardar ctrl s catch vacio no imprime nada no funciona depurar printstacktrace utf-8 acentos eclipse encoding casos limite un solo elemento fichero vacio probar antes de entregar"><h3 class="cardtitle">⚠ Fallos que NO son de código (los que más tiempo roban)</h3><div class="note">Cuando "no funciona", antes de tocar el código revisa esto en orden:</div><div class="note"><b>1 · ¿Guardaste el fichero?</b> Si editas el CSV y no haces Ctrl+S, Eclipse lee la versión vieja del disco. Mira si la pestaña tiene un <code>*</code> (cambios sin guardar).</div><div class="note"><b>2 · ¿La ruta es correcta?</b> El <code>FileNotFoundException</code> casi siempre es ruta mal escrita o package equivocado. El fichero debe estar donde dice la ruta exacta.</div><div class="note"><b>3 · catch vacío = ciego.</b> Un <code>catch { }</code> sin nada se traga el error en silencio y parece que "no imprime nada". Pon SIEMPRE <code>System.out.println("Error: " + e.getMessage())</code>. Además la rúbrica da 0,5 por tratar excepciones.</div><div class="note"><b>4 · Acentos rotos = UTF-8.</b> Si "Perú" sale mal en consola, no es tu código: es la codificación. En Eclipse: clic derecho en el .csv → Properties → Text file encoding → UTF-8.</div><div class="note"><b>5 · Prueba los casos límite:</b> línea con campos de menos, UN solo registro (la "y" no debe salir), y solo cabecera (mensaje de vacío). Compilar ≠ estar probado.</div></section></div></div>
 <div class="rasection" id="ra8" style="--c:#ffb3a0"><div class="rahead"><span class="rabadge">RA8</span><div><h2>Persistencia de objetos</h2><span class="raunidad">UT8</span></div></div><div class="cards"><section class="card" data-search="clase serializable para guardar objetos, la clase implementa serializable. transient = no se guarda. static = no se guarda. import java.io.*;
 public class tarea implements serializable {
     private static final long serialversionuid = 1l;
